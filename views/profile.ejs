@@ -1,1 +1,99 @@
-yy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KiiCode | Profile</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    .profile-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    .nav-tabs {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container profile-container">
+    <img id="profile-img" class="profile-img" src="<%= user.profile %>" alt="Profile Picture">
+    <ul class="nav nav-tabs" id="profileTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="account-info-tab" data-toggle="tab" href="#account-info" role="tab" aria-controls="account-info" aria-selected="true">Account Info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="profileTabContent">
+      <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
+        <h3>Account Info</h3>
+        <p><strong>Username:</strong> <%= user.username %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>API Key:</strong> <%= user.apiKey %></p>
+        <p><strong>Premium:</strong> <%= user.premium ? 'Yes' : 'No' %></p>
+        <% if (user.premium) { %>
+          <p><strong>Premium Expires:</strong> <%= new Date(user.premiumTime * 1000).toLocaleString() %></p>
+        <% } %>
+      </div>
+      <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+        <h3>Settings</h3>
+        <form id="settings-form">
+          <div class="form-group">
+            <label for="username">Change Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter new username">
+          </div>
+          <div class="form-group">
+            <label for="profile">Change Profile Picture URL</label>
+            <input type="text" class="form-control" id="profile" name="profile" placeholder="Enter new profile picture URL">
+          </div>
+          <div class="form-group">
+            <label for="apikey">Change API Key</label>
+            <input type="text" class="form-control" id="apikey" name="apikey" placeholder="Enter new API key">
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('settings-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const profile = document.getElementById('profile').value;
+      const apikey = document.getElementById('apikey').value;
+
+      fetch('/user/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, profile, apikey })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          alert(data.message);
+          if (profile) {
+            document.getElementById('profile-img').src = profile;
+          }
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  </script>
+</body>
+</html>

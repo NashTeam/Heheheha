@@ -63,7 +63,7 @@ passport.use(new GitHubStrategy({
     try {
       let user = await User.findOne({ githubId: profile.id });
       if (!user) {
-        const apiKey = `KC-${crypto.randomBytes(8).toString('hex')}`;
+        const apiKey = `ATZX-${crypto.randomBytes(8).toString('hex')}`;
         let email = '';
         if (profile.emails && profile.emails.length > 0) {
           email = profile.emails[0].value;
@@ -160,9 +160,8 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 });
 
 // Route untuk halaman utama
-app.get('/', async (req, res) => {
-  const userCount = await User.countDocuments();
-  res.render('indek', { userCount });
+app.get('/', (req, res) => {
+  res.render('index'); // Render template index.ejs
 });
 
 // Route untuk mendapatkan jumlah pengguna

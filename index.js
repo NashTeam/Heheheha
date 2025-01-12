@@ -162,7 +162,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 // Route untuk halaman utama
 app.get('/', async (req, res) => {
   const userCount = await User.countDocuments();
-  res.render('index', { userCount });
+  res.render('indek', { userCount });
 });
 
 // Route untuk mendapatkan jumlah pengguna
